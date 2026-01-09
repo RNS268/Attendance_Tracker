@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+
+# Mac
+.DS_Store
+
+# Project Data (Private)
+student_data/
+attendance_files/
+registration_images/
+faces_to_scan/
+
+# Logs
+*.log

@@ -1,0 +1,21 @@
+# Core libraries (latest stable as of Jan 2026)
+numpy>=1.26.0
+pandas>=2.2.0
+openpyxl>=3.1.0
+
+# Computer Vision & Face Recognition
+opencv-python>=4.9.0
+dlib==20.0.0          # Latest version; may require cmake for compilation on some systems
+face-recognition==1.3.0  # Still the latest stable (no updates since 2020)
+
+# Audio (optional - falls back to print if not installed)
+pyttsx3>=2.90
+
+# Utilities (from your original)
+Pillow>=10.0.0        # Often required by face-recognition/opencv
+setuptools>=70.0.0    # Usually pre-installed, but safe to include
+
+# Removed/Optional (no longer needed or rarely used in your project)
+# python-dotenv  (not used in current code)
+# colorama       (not used in current code)
+# git+... models (obsolete - models are bundled now)
