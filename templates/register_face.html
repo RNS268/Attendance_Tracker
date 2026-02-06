@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register Face — Attendance</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <style>
+    #video {
+      width: 100%;
+      max-width: 480px;
+      border-radius: var(--radius);
+      background: #000;
+    }
+
+    #canvas {
+      display: none;
+    }
+
+    .capture-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+
+    .capture-row .btn {
+      flex: 1;
+      min-width: 120px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" style="max-width: 600px;">
+    <div class="card">
+      <nav class="nav">
+        <a href="/dashboard">← Dashboard</a>
+      </nav>
+      <h1>Register face</h1>
+      <p class="subtitle">Allow camera access, then capture a clear frontal face.</p>
+      <div id="msg" class="msg" hidden></div>
+
+      <label for="name">Full name</label>
+      <input type="text" id="name" name="name" placeholder="e.g. John Doe" required maxlength="128">
+
+      <div class="capture-row">
+        <button type="button" class="btn btn-secondary" id="startCam">Start camera</button>
+        <button type="button" class="btn btn-primary" id="capture" disabled>Capture</button>
+      </div>
+
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas"></canvas>
+
+      <div style="margin-top: 16px;">
+        <button type="button" class="btn btn-primary" id="upload" disabled>Upload & register</button>
+      </div>
+    </div>
+  </div>
+  <script src="/static/js/common.js"></script>
+  <script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const startBtn = document.getElementById("startCam");
+    const captureBtn = document.getElementById("capture");
+    const uploadBtn = document.getElementById("upload");
+    const nameInput = document.getElementById("name");
+    const msg = document.getElementById("msg");
+
+    let stream = null;
+    let capturedBlob = null;
+
+    async function startCamera() {
+      hideMsg(msg);
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: false,
+        });
+        video.srcObject = stream;
+        captureBtn.disabled = false;
+        startBtn.textContent = "Stop camera";
+        startBtn.onclick = stopCamera;
+      } catch (e) {
+        showMsg(msg, "Camera access denied or unavailable. Use HTTPS or localhost.", true);
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach((t) => t.stop());
+        stream = null;
+      }
+      video.srcObject = null;
+      captureBtn.disabled = true;
+      uploadBtn.disabled = true;
+      capturedBlob = null;
+      startBtn.textContent = "Start camera";
+      startBtn.onclick = startCamera;
+    }
+
+    function captureFrame() {
+      if (!stream || !video.videoWidth) return;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0);
+      canvas.toBlob(
+        (blob) => {
+          capturedBlob = blob;
+          uploadBtn.disabled = false;
+          showMsg(msg, "Frame captured. Enter name and click Upload.", false);
+        },
+        "image/jpeg",
+        0.92
+      );
+    }
+
+    captureBtn.addEventListener("click", captureFrame);
+    startBtn.addEventListener("click", startCamera);
+
+    uploadBtn.addEventListener("click", async () => {
+      const name = nameInput.value.trim();
+      if (!name) {
+        showMsg(msg, "Enter a name.", true);
+        return;
+      }
+      if (!capturedBlob) {
+        showMsg(msg, "Capture a frame first.", true);
+        return;
+      }
+      hideMsg(msg);
+      uploadBtn.disabled = true;
+      const form = new FormData();
+      form.append("image", capturedBlob, "face.jpg");
+      form.append("name", name);
+      try {
+        const r = await fetchApi("/register_face", {
+          method: "POST",
+          body: form,
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          showMsg(msg, data.error || "Registration failed", true);
+          uploadBtn.disabled = false;
+          return;
+        }
+        showMsg(msg, "Registered: " + name, false);
+        nameInput.value = "";
+        capturedBlob = null;
+        uploadBtn.disabled = true;
+      } catch (e) {
+        showMsg(msg, "Network error. Try again.", true);
+        uploadBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>

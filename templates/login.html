@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login — Attendance</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+</head>
+
+<body>
+  <div class="auth-container">
+    <div class="card">
+      <h1>Attendance</h1>
+      <p class="subtitle">Sign in to manage faces and view logs.</p>
+      <div id="msg" class="msg" hidden></div>
+      <form id="form">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autocomplete="username">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+        <button type="submit" class="btn btn-primary" id="submit">Sign in</button>
+      </form>
+    </div>
+  </div>
+  <script src="/static/js/common.js"></script>
+  <script>
+    const form = document.getElementById("form");
+    const msg = document.getElementById("msg");
+    const submit = document.getElementById("submit");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      hideMsg(msg);
+      submit.disabled = true;
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      try {
+        const r = await fetchApi("/login", {
+          method: "POST",
+          body: { username, password },
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          showMsg(msg, data.error || "Login failed", true);
+          submit.disabled = false;
+          return;
+        }
+        window.location.href = "/dashboard";
+      } catch (err) {
+        showMsg(msg, "Network error. Try again.", true);
+        submit.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>

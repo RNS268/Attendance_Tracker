@@ -1,0 +1,71 @@
+# ESP32-CAM Face Recognition Attendance System — How to Run
+
+Follow these steps to set up and run your face recognition attendance system.
+
+---
+
+## 🚀 1. Backend Setup (Flask Server)
+
+1.  **Open Terminal and Navigate to Project:**
+    ```bash
+    cd /Users/Shashank/Documents/Attendance
+    ```
+
+2.  **Activate Virtual Environment:**
+    ```bash
+    source venv/bin/activate
+    ```
+
+3.  **Install Dependencies (if not already done):**
+    ```bash
+    pip install -r backend/requirements.txt
+    ```
+
+4.  **Run the Server:**
+    ```bash
+    cd backend
+    python app.py
+    ```
+    *Note: The server will run on `http://10.145.238.39:5000`.*
+
+---
+
+## 📡 2. Firmware Setup (ESP32-CAM)
+
+1.  **Open Arduino IDE.**
+2.  **Open the Sketch:** `firmware/esp32cam_attendance/esp32cam_attendance.ino`.
+3.  **Configure WiFi:** Enter your WiFi name and password on lines 9 and 10:
+    ```cpp
+    const char* WIFI_SSID = "Your_WiFi_Name";
+    const char* WIFI_PASS = "Your_WiFi_Password";
+    ```
+4.  **Verify IP:** Ensure `SERVER_URL` on line 14 shows `http://10.145.238.39:5000/recognize_face`.
+5.  **Upload:** Select **AI Thinker ESP32-CAM** board and click Upload.
+
+---
+
+## 📸 3. Usage & Registration
+
+1.  **Register Your Face:**
+    - Open your browser and go to `http://10.145.238.39:5000`.
+    - Login with `admin` / `admin123`.
+    - Go to **Register Face** and use your webcam to save your face with your name.
+
+2.  **Start Recognition:**
+    - Point the ESP32-CAM at your face.
+    - Press the **Button (Pin 13)** or walk in front of the **PIR Sensor (Pin 12)**.
+    - The ESP32 will blink its red LED once for a successful "Recognized" result.
+    - View the logs in real-time on the **Dashboard**.
+
+---
+
+## ✨ Project Characteristics
+
+- **Online-Only Flow**: No SD card required; frames are processed instantly by the server.
+- **Real-Time Recognition**: Powered by the industry-standard `face_recognition` (dlib) library.
+- **Dual Trigger System**: Supports both manual (Button) and automatic (PIR Motion) capture.
+- **Smart Cooldown**: Prevents double-logging of the same person within a 30-second window.
+- **Robust Connection**: High-frequency WiFi monitoring and exponential backoff for HTTP requests.
+- **Multipart Data Handling**: Professional-grade image transmission for maximum compatibility.
+- **Secure Auth**: Uses bcrypt for passwords and API tokens for ESP32-to-server security.
+- **Responsive Dashboard**: Web-based UI to view attendance logs from any device on your network.

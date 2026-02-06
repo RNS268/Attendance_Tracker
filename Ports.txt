@@ -1,0 +1,39 @@
+# ESP32-CAM PORT CONNECTIONS
+
+This file documents the current and suggested pin connections for the ESP32-CAM Attendance System.
+
+## Current Connections (as defined in code)
+
+| Component      | ESP32-CAM Pin| Type   | Notes                         |
+|----------------|--------------|--------|-------------------------------|
+| Trigger Button | GPIO 13      | Input  | Pull-up (Active LOW)          |
+| Success LED    | GPIO 2       | Output | Green LED (Active HIGH)       |
+| Red LED        | GPIO 12      | Output | External Red LED (Active HIGH)|
+| Blue LED       | GPIO 3       | Output | Blue LED (Active HIGH)        |
+| Status/Process | GPIO 33      | Output | Back LED (Active LOW)         |
+| **RESERVED**   | **GPIO 16**  | MEM    |REQUIRED FOR PSRAM - DO NOT USE|
+| I2C LCD SDA    | GPIO 14      | I/O    | Connect to LCD SDA            |
+| I2C LCD SCL    | GPIO 15      | Output | Connect to LCD SCL            |
+
+## Power Requirements
+
+| LCD Pin | ESP32-CAM Pin| Notes             |
+|---------|--------------|-------------------|
+| VCC     | 5V           | LCD requires 5V   |
+| GND     | GND          | Common Ground     |
+
+---
+
+## Pin Usage Notes
+
+1. **LCD (I2C)**: Uses GPIO 14 (SDA) and GPIO 15 (SCL). These pins are shared with the SD Card interface. Since SD is not used, they are dedicated to the LCD.
+2. **Feedback**: The onboard red LED (GPIO 33) blinks 1 time for "Recognized" and 3 times for "Unknown".
+
+---
+
+## IMPORTANT WARNINGS
+
+1. **Power Supply**: The ESP32-CAM is very sensitive to power. When using an LCD and LEDs, ensure you provide at least **2A @ 5V** via the 5V pin.
+2. **Booting**: GPIO 0 must be open or HIGH for normal boot. It is used as the XCLK for the camera, so do NOT use it for other components.
+3. **Flash Pin**: GPIO 4 is connected to the powerful front-facing flash LED. If you use this pin for a failure LED or buzzer, the flash will also trigger.
+4. **SD Card**: If you decide to use an SD card later, GPIOs 2, 4, 12, 13, 14, and 15 will be occupied by the SD MMC interface.

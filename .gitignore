@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+*.db
+.env
+.DS_Store
+*.log
+.idea/
+.vscode/
+backend/latest_capture.jpg
