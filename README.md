@@ -107,14 +107,13 @@ The system uses a secured HTTP/JSON interface:
 *   📦 **[ArduinoJson](https://arduinojson.org/)**: Essential library for parsing server responses.
 *   🐍 **[Flask Documentation](https://flask.palletsprojects.com/)**: Documentation for the backend framework.
 
-�🧪 **References**
+🧪 **References**
 
 *   **Dlib (C++ Library)**: The powerhouse behind the HOG and Deep Learning models used for face detection. [Dlib.net](http://dlib.net/)
 *   **OpenCV**: Used for image preprocessing and visualization within the backend. [OpenCV.org](https://opencv.org/)
 *   **Face Recognition Paper**: *FaceNet: A Unified Embedding for Face Recognition and Clustering* (Schroff et al.) – The foundation for modern embedding-based recognition.
 *   **Espressif ESP-IDF**: The official development framework for ESP32, providing the low-level camera and networking APIs.
-
-�🤝 **Contributing**
+🤝 **Contributing**
 
 1.  Fork the project
 2.  Create your feature branch (`git checkout -b feature/AmazingFeature`)
