@@ -107,7 +107,7 @@ The system uses a secured HTTP/JSON interface:
 *   📦 **[ArduinoJson](https://arduinojson.org/)**: Essential library for parsing server responses.
 *   🐍 **[Flask Documentation](https://flask.palletsprojects.com/)**: Documentation for the backend framework.
 
-� **References**
+�🧪 **References**
 
 *   **Dlib (C++ Library)**: The powerhouse behind the HOG and Deep Learning models used for face detection. [Dlib.net](http://dlib.net/)
 *   **OpenCV**: Used for image preprocessing and visualization within the backend. [OpenCV.org](https://opencv.org/)
